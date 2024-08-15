@@ -36,7 +36,8 @@ line.elasticity = 0.5
 line.friction = 0.1
 space.add(line)
 
-def make_ball():
+balls = []
+for _ in range(20):
     body = pymunk.Body()
     body.position = (400, 50)
     r = random.randint(10, 25)
@@ -45,26 +46,19 @@ def make_ball():
     shape.elasticity = 0.5
     shape.friction = 0.1
     space.add(body, shape)
-    return shape
-
-shapes = []
-for _ in range(20):
-    shapes.append(make_ball())
+    balls.append(body)
 
 while True:
-    for i in range(len(shapes)):
-        shape = shapes[i]
-        body = shape.body
-        if body.position.y > 550:
-            space.remove(body, shape)
-            shapes[i] = make_ball()
-        elif body.position.x < 100:
+    for ball in balls:
+        if ball.position.y > 550:
+            ball.position = (400, 50)
+        elif ball.position.x < 100:
             # when using forces, make sure friction and elasticity
             # do not have high values, otherwise bodies start getting
             # enormous velocities and fly through obstacles
-            body.apply_force_at_world_point((0, -2500), (0, 0))
-            if body.position.y < 300:
-                body.apply_force_at_world_point((300, 0), (0, 0))
+            ball.apply_force_at_world_point((0, -2500), (0, 0))
+            if ball.position.y < 300:
+                ball.apply_force_at_world_point((300, 0), (0, 0))
 
     space.step(1/60)
     screen.fill((0, 0, 0))
